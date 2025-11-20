@@ -16,7 +16,7 @@ A robust, configurable Python-based web scraper for extracting product data from
 2. Install dependencies:
    ```bash
    pip install -r requirements.txt
-   ``
+   ```
 3. Configure your target website in ``configs/website_templates/``
 
 # Usage
