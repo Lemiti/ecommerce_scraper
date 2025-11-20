@@ -1,0 +1,22 @@
+{
+  "name": "books_toscrape",
+  "base_url": "http://books.toscrape.com/",
+  "selectors": {
+    "product_links": ".product_pod h3 a",
+    "name": ".product_main h1",
+    "price": ".product_main .price_color",
+    "availability": ".product_main .availability",
+    "description": "#product_description + p",
+    "category": ".breadcrumb li:nth-last-child(2) a",
+    "image": ".item.active img"
+  },
+  "pagination": {
+    "pattern": "catalogue/page-{page_number}.html",
+    "max_pages": 5
+  },
+  "request_settings": {
+    "delay_between_requests": 1.0,
+    "timeout": 30,
+    "retry_attempts": 3
+  }
+}
