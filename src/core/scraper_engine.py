@@ -184,3 +184,18 @@ class ScraperEngine:
         except FileNotFoundError:
             self.logger.warning("Progress file not found, starting fresh")
             return []
+    def _analyze_site_response(self, response, url: str) -> str:
+        """Analyze site response and provide feedback"""
+        if not response:
+            return "Site unavailable or blocked"
+        
+        if response.status_code == 403:
+            return "Site has anti-bot protection (403 Forbidden)"
+        
+        if response.status_code == 429:
+            return "Rate limited - too many requests"
+        
+        if "captcha" in response.text.lower() or "cloudflare" in response.text.lower():
+            return "Site using CAPTCHA or Cloudflare protection"
+        
+        return "Site accessible"

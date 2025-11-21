@@ -1,0 +1,23 @@
+{
+  "name": "bestbuy",
+  "base_url": "https://www.bestbuy.com/site/searchpage.jsp?st=laptop",
+  "selectors": {
+    "product_links": ".sku-item .sku-header a",
+    "name": "h1.v-fw-regular",
+    "price": ".pricing-price .sr-only",
+    "availability": ".fulfillment-add-to-cart-button",
+    "description": ".product-description",
+    "category": ".breadcrumbs-list-item:last-child",
+    "image": ".primary-image"
+  },
+  "pagination": {
+    "pattern": "&cp={page_number}",
+    "max_pages": 3
+  },
+  "request_settings": {
+    "delay_between_requests": 2.5,
+    "timeout": 30,
+    "retry_attempts": 3,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+  }
+}

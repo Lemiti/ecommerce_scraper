@@ -1,0 +1,23 @@
+{
+  "name": "newegg",
+  "base_url": "https://www.newegg.com/Laptops-Notebooks/Category/ID-223",
+  "selectors": {
+    "product_links": ".item-cell .item-info a",
+    "name": "h1.product-title",
+    "price": ".product-buy-box .price-current",
+    "availability": ".product-inventory",
+    "description": ".product-bullets",
+    "category": ".breadcrumb a:last-child",
+    "image": ".product-view-img-original"
+  },
+  "pagination": {
+    "pattern": "?Page={page_number}",
+    "max_pages": 3
+  },
+  "request_settings": {
+    "delay_between_requests": 3.0,
+    "timeout": 30,
+    "retry_attempts": 3,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+  }
+}

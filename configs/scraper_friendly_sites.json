@@ -1,0 +1,45 @@
+{
+  "recommended_sites": [
+    {
+      "name": "books_toscrape",
+      "url": "http://books.toscrape.com/",
+      "difficulty": "Easy",
+      "notes": "Designed for scraping practice"
+    },
+    {
+      "name": "quotes_toscrape", 
+      "url": "http://quotes.toscrape.com/",
+      "difficulty": "Easy",
+      "notes": "Good for testing"
+    },
+    {
+      "name": "demo_ecommerce",
+      "url": "https://webscraper.io/test-sites/e-commerce/allinone",
+      "difficulty": "Easy", 
+      "notes": "Realistic e-commerce demo site"
+    },
+    {
+      "name": "asos",
+      "url": "https://www.asos.com/",
+      "difficulty": "Medium",
+      "notes": "Works well with proper delays"
+    }
+  ],
+  "challenging_sites": [
+    {
+      "name": "amazon",
+      "difficulty": "Hard",
+      "notes": "Strong anti-bot, requires advanced techniques"
+    },
+    {
+      "name": "newegg", 
+      "difficulty": "Hard",
+      "notes": "403 protection, needs proxies"
+    },
+    {
+      "name": "bestbuy",
+      "difficulty": "Hard", 
+      "notes": "Advanced bot detection"
+    }
+  ]
+}

@@ -253,6 +253,15 @@ class ScraperGUI:
             self.stop_button.config(state=tk.DISABLED)
             self.progress_var.set(100)
 
+    def setup_gui(self):
+        # ... existing code ...
+        
+        # Add site recommendations label
+        info_label = ttk.Label(main_frame, 
+                            text="💡 Recommended for demo: Books to Scrape, ASOS, Demo E-commerce",
+                            foreground="blue")
+        info_label.grid(row=5, column=0, columnspan=2, pady=5, sticky=tk.W)
+
 def run_gui():
     """Run the GUI application"""
     root = tk.Tk()
@@ -261,3 +270,4 @@ def run_gui():
 
 if __name__ == "__main__":
     run_gui()
+    

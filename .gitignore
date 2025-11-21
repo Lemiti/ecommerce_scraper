@@ -6,3 +6,4 @@ logs
 scraping_progress.json
 exports/*
 exports
+configs/credentials.json
