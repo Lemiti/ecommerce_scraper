@@ -86,7 +86,7 @@ class ScraperEngine:
                 break
             
             # Extract product links
-            product_urls = self.parser.extract_product_links(response.text)
+            product_urls = self.parser.extract_product_links(response.text, base_page_url=page_url)
             
             if not product_urls:
                 self.logger.info("No more products found, stopping pagination")

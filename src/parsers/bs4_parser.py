@@ -63,7 +63,7 @@ class BS4Parser:
         element = soup.select_one(selector)
         return element.get(attribute) if element else None
     
-    def extract_product_links(self, html: str) -> List[str]:
+    def extract_product_links(self, html: str, base_page_url: Optional[str] = None) -> List[str]:
         """
         Extract all product links from a listing page
         """
@@ -75,12 +75,12 @@ class BS4Parser:
             self.logger.warning("No product_links selector configured")
             return links
         
+        join_base = base_page_url or self.base_url
         for link_element in soup.select(selector):
             href = link_element.get('href')
             if href:
-                # Handle relative URLs by joining with base_url
-                full_url = urljoin(self.base_url, href)
+                full_url = urljoin(join_base, href)
                 links.append(full_url)
-        
+
         self.logger.info(f"Found {len(links)} product links")
         return links

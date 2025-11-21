@@ -1,86 +1,54 @@
-from bs4 import BeautifulSoup
-from typing import Optional, List
-from urllib.parse import urljoin
+#!/usr/bin/env python3
+"""
+Main entry point for the E-commerce Scraper
+"""
 
-from src.core.data_models import Product
+import sys
+from pathlib import Path
+
+# Add src to Python path
+src_path = Path(__file__).parent / "src"
+sys.path.insert(0, str(src_path))
+
+from src.core.scraper_engine import ScraperEngine
+from src.exporters.excel_exporter import ExcelExporter
+from src.utils.config_loader import ConfigLoader
 from src.utils.logger import setup_logger
 
-class BS4Parser:
-    """
-    BeautifulSoup-based HTML parser for product data extraction
-    """
+def main():
+    """Main function"""
+    logger = setup_logger("main")
+    logger.info("Starting E-commerce Scraper...")
     
-    def __init__(self, base_url: str, selectors: dict):
-        self.base_url = base_url
-        self.selectors = selectors
-        self.logger = setup_logger(__name__)
-    
-    def parse_product_page(self, html: str, product_url: str) -> Optional[Product]:
-        """
-        Parse product details from HTML content
-        """
-        try:
-            soup = BeautifulSoup(html, 'lxml')
-            
-            # Extract basic product information
-            product_data = {
-                'product_url': product_url,
-                'product_name': self._extract_text(soup, self.selectors.get('name')),
-                'price': self._extract_text(soup, self.selectors.get('price')),
-                'availability': self._extract_text(soup, self.selectors.get('availability')),
-                'description': self._extract_text(soup, self.selectors.get('description')),
-                'category': self._extract_text(soup, self.selectors.get('category')),
-                'image_url': self._extract_attribute(soup, self.selectors.get('image'), 'src'),
-            }
-            
-            # Create Product object
-            product = Product(**product_data)
-            
-            # Clean up image URL
-            if product.image_url and not product.image_url.startswith(('http', '//')):
-                product.image_url = urljoin(self.base_url, product.image_url)
-            
-            self.logger.debug(f"Parsed product: {product.product_name}")
-            return product
-            
-        except Exception as e:
-            self.logger.error(f"Failed to parse product page {product_url}: {e}")
-            return None
-    
-    def _extract_text(self, soup: BeautifulSoup, selector: str) -> Optional[str]:
-        """Extract text using CSS selector"""
-        if not selector:
-            return None
+    try:
+        # Load configuration
+        config = ConfigLoader.load_config()
+        logger.info("Configuration loaded successfully")
         
-        element = soup.select_one(selector)
-        return element.get_text(strip=True) if element else None
-    
-    def _extract_attribute(self, soup: BeautifulSoup, selector: str, attribute: str) -> Optional[str]:
-        """Extract attribute value using CSS selector"""
-        if not selector:
-            return None
+        # Load website-specific configuration
+        website_config = ConfigLoader.load_website_config("books_toscrape")
+        logger.info(f"Loaded configuration for: {website_config.get('name')}")
         
-        element = soup.select_one(selector)
-        return element.get(attribute) if element else None
-    
-    def extract_product_links(self, html: str) -> List[str]:
-        """
-        Extract all product links from a listing page
-        """
-        soup = BeautifulSoup(html, 'lxml')
-        links = []
+        # Initialize scraper
+        scraper = ScraperEngine(website_config)
         
-        selector = self.selectors.get('product_links')
-        if not selector:
-            self.logger.warning("No product_links selector configured")
-            return links
+        # Start scraping
+        products = scraper.scrape_catalog()
         
-        for link_element in soup.select(selector):
-            href = link_element.get('href')
-            if href:
-                # Handle relative URLs by joining with base_url
-                full_url = urljoin(self.base_url, href)
-                links.append(full_url)
+        # Export results
+        if products:
+            exporter = ExcelExporter()
+            output_file = exporter.export_products(products)
+            logger.info(f"Successfully exported {len(products)} products to {output_file}")
+        else:
+            logger.warning("No products were scraped")
         
-        self.logger.info(f"Found {len(links)} product links")
-        return links
+        # Save progress for potential resumption
+        scraper.save_progress()
+        
+    except Exception as e:
+        logger.error(f"Application failed: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
