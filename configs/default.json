@@ -12,7 +12,7 @@
       "filename_template": "products_{timestamp}.xlsx"
     },
     "google_sheets": {
-      "enabled": false,
+      "enabled": true,
       "credentials_file": "./configs/credentials.json",
       "spreadsheet_name": "Scraped Products {timestamp}",
       "worksheet_name": "Products"

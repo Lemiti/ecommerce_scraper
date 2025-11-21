@@ -10,6 +10,8 @@ from src.exporters.excel_exporter import ExcelExporter
 from src.exporters.image_downloader import ImageDownloader
 from src.utils.config_loader import ConfigLoader
 from src.utils.logger import setup_logger
+from src.exporters.google_sheets_exporter import GoogleSheetsExporter
+
 
 class ScraperGUI:
     """
@@ -55,7 +57,8 @@ class ScraperGUI:
         options_frame = ttk.LabelFrame(main_frame, text="Options", padding="5")
         options_frame.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=10)
         options_frame.columnconfigure(0, weight=1)
-        
+
+
         # Export options
         self.export_excel_var = tk.BooleanVar(value=True)
         ttk.Checkbutton(options_frame, text="Export to Excel", 
@@ -64,6 +67,12 @@ class ScraperGUI:
         self.download_images_var = tk.BooleanVar(value=True)
         ttk.Checkbutton(options_frame, text="Download Images", 
                        variable=self.download_images_var).grid(row=0, column=1, sticky=tk.W)
+        
+                # Add to the options frame (around line 45)
+        self.export_gsheets_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(options_frame, text="Export to Google Sheets", 
+                    variable=self.export_gsheets_var).grid(row=0, column=2, sticky=tk.W)
+        
         
         # Max products
         ttk.Label(options_frame, text="Max Products:").grid(row=1, column=0, sticky=tk.W, pady=5)
@@ -206,7 +215,19 @@ class ScraperGUI:
                     output_file = exporter.export_products(products)
                     self.gui_logger.info(f"Exported to: {output_file}")
                 
-                # Download images
+                # Export to Google Sheets
+                if self.export_gsheets_var.get() and products and self.is_scraping:
+                    try:
+                        gsheets_exporter = GoogleSheetsExporter()
+                        spreadsheet_url = gsheets_exporter.export_products(products)
+                        if spreadsheet_url:
+                            self.gui_logger.info(f"Exported to Google Sheets: {spreadsheet_url}")
+                        else:
+                            self.gui_logger.warning("Google Sheets export failed - check credentials")
+                    except Exception as e:
+                        self.gui_logger.error(f"Google Sheets export error: {e}")
+                        
+                                # Download images
                 if self.download_images_var.get():
                     image_downloader = ImageDownloader()
                     downloaded_images = image_downloader.download_product_images(products)

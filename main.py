@@ -16,6 +16,7 @@ def run_cli():
     """Run in command line mode"""
     from src.core.scraper_engine import ScraperEngine
     from src.exporters.excel_exporter import ExcelExporter
+    from src.exporters.google_sheets_exporter import GoogleSheetsExporter  # Add this
     from src.exporters.image_downloader import ImageDownloader
     from src.utils.config_loader import ConfigLoader
     from src.utils.logger import setup_logger
@@ -40,9 +41,19 @@ def run_cli():
         
         # Export results
         if products:
+            # Export to Excel
             exporter = ExcelExporter()
             output_file = exporter.export_products(products)
             logger.info(f"Successfully exported {len(products)} products to {output_file}")
+            
+            # Export to Google Sheets if enabled
+            if config['export']['google_sheets']['enabled']:
+                gsheets_exporter = GoogleSheetsExporter()
+                spreadsheet_url = gsheets_exporter.export_products(products)
+                if spreadsheet_url:
+                    logger.info(f"Exported to Google Sheets: {spreadsheet_url}")
+                else:
+                    logger.warning("Google Sheets export failed - check credentials")
             
             # Download images
             image_downloader = ImageDownloader()
