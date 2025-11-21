@@ -6,20 +6,25 @@ from src.core.data_models import Product
 from src.utils.logger import setup_logger
 
 class BS4Parser:
+    """
+    BeautifulSoup-based HTML parser for product data extraction
+    """
+    
     def __init__(self, base_url: str, selectors: dict):
         self.base_url = base_url
         self.selectors = selectors
         self.logger = setup_logger(__name__)
-
-    def parse_product_page(self, html:str, product_url: str) -> Optional[Product]:
-        """ Parse product details from HTML content """
-        
+    
+    def parse_product_page(self, html: str, product_url: str) -> Optional[Product]:
+        """
+        Parse product details from HTML content
+        """
         try:
             soup = BeautifulSoup(html, 'lxml')
-
+            
+            # Extract basic product information
             product_data = {
                 'product_url': product_url,
-                'product_name': self._extract_text,
                 'product_name': self._extract_text(soup, self.selectors.get('name')),
                 'price': self._extract_text(soup, self.selectors.get('price')),
                 'availability': self._extract_text(soup, self.selectors.get('availability')),
@@ -73,6 +78,7 @@ class BS4Parser:
         for link_element in soup.select(selector):
             href = link_element.get('href')
             if href:
+                # Handle relative URLs by joining with base_url
                 full_url = urljoin(self.base_url, href)
                 links.append(full_url)
         

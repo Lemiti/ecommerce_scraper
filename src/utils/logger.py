@@ -19,7 +19,7 @@ def setup_logger(name: str, log_level:str="INFO") -> logging.Logger:
 
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(formatter)
-    logger.addHanler(console_handler)
+    logger.addHandler(console_handler)
 
 
     log_file = Path("logs") / f"{name}.log"
