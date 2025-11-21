@@ -63,19 +63,19 @@ class BS4Parser:
         element = soup.select_one(selector)
         return element.get(attribute) if element else None
     
-    def extract_product_links(self, html: str, base_page_url: Optional[str] = None) -> List[str]:
-        """
-        Extract all product links from a listing page
-        """
+    def extract_product_links(self, html: str, base_page_url: str = None) -> List[str]:
+
         soup = BeautifulSoup(html, 'lxml')
         links = []
-        
+
         selector = self.selectors.get('product_links')
         if not selector:
             self.logger.warning("No product_links selector configured")
             return links
-        
+
+        # Prefer listing page URL when joining; fallback to base_url
         join_base = base_page_url or self.base_url
+
         for link_element in soup.select(selector):
             href = link_element.get('href')
             if href:

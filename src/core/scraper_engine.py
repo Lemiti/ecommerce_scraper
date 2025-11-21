@@ -19,13 +19,22 @@ class ScraperEngine:
         self.scraping_config = scraping_config or ScrapingConfig()
         self.logger = setup_logger(__name__)
         
-        # Initialize components
-        self.request_manager = RequestManager({
-            'delay_between_requests': self.scraping_config.delay_between_requests,
-            'timeout': self.scraping_config.timeout,
-            'retry_attempts': self.scraping_config.retry_attempts,
-            'user_agent': self.scraping_config.user_agent
-        })
+        # Merge site-specific request settings with defaults
+        site_req = website_config.get("request_settings", {})
+
+        req_config = {
+            "delay_between_requests":
+                site_req.get("delay_between_requests", self.scraping_config.delay_between_requests),
+            "timeout":
+                site_req.get("timeout", self.scraping_config.timeout),
+            "retry_attempts":
+                site_req.get("retry_attempts", self.scraping_config.retry_attempts),
+            "user_agent":
+                site_req.get("user_agent", self.scraping_config.user_agent),
+        }
+
+        # Apply merged settings
+        self.request_manager = RequestManager(req_config)
         
         self.parser = BS4Parser(
             base_url=website_config.get('base_url', ''),
@@ -36,6 +45,7 @@ class ScraperEngine:
         self.scraped_products: List[Product] = []
         self.failed_urls: List[str] = []
         
+
     def scrape_catalog(self, start_url: Optional[str] = None) -> List[Product]:
         """
         Main method to scrape entire product catalog

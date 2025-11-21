@@ -7,7 +7,7 @@ from src.core.data_models import Product
 from src.utils.logger import setup_logger
 
 class ExcelExporter:
-    """ Export product data to Exceel format"""
+    """ Export product data to Excel format"""
 
     def __init__(self, output_path: str="./exports"):
         self.output_path = Path(output_path)
