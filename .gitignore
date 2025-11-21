@@ -3,4 +3,6 @@ __pycache__/*
 __pycache__
 logs/*
 logs
-scrapping_progress.json
+scraping_progress.json
+exports/*
+exports

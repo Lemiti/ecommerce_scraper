@@ -14,6 +14,7 @@ from src.core.scraper_engine import ScraperEngine
 from src.exporters.excel_exporter import ExcelExporter
 from src.utils.config_loader import ConfigLoader
 from src.utils.logger import setup_logger
+from src.exporters.image_downloader import ImageDownloader
 
 def main():
     """Main function"""
@@ -40,6 +41,10 @@ def main():
             exporter = ExcelExporter()
             output_file = exporter.export_products(products)
             logger.info(f"Successfully exported {len(products)} products to {output_file}")
+
+            image_downloader = ImageDownloader()
+            downloaded_images = image_downloader.download_product_images(products)
+            logger.info(f"Downloaded {len(downloaded_images)} product images")
         else:
             logger.warning("No products were scraped")
         
